@@ -20,7 +20,22 @@ exports.createShipment = async (req, res) => {
 
 exports.getAllShipments = async (req, res) => {
     try {
-        const allShipment = await shipment.find();
+        const { search, status } = req.query;
+
+        const filter = {};
+
+        if (search) {
+            filter.referenceNumber = {
+                $regex: search,
+                $options: 'i'
+            };
+        }
+
+        if (status) {
+            filter.currentStatus = status;
+        }
+
+        const allShipment = await shipment.find(filter);
 
         res.status(200).json(allShipment);
     }
