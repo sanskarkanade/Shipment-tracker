@@ -8,7 +8,7 @@ const {
   getShipmentById,
   updateShipmentStatus,
   getShipmentHistory
-} = require('../controllers/shipmentController');
+} = require('../controller/shipmentController');
 
 router.post('/', createShipment);
 router.get('/', getAllShipments);

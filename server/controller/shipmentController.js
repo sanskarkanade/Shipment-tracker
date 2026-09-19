@@ -66,21 +66,53 @@ exports.updateShipmentStatus = async (req, res) => {
         const shipmentData = await shipment.findById(req.params.id);
 
         if (!shipmentData) {
-            return res.status(404).json({ message: 'Shipment not found' });
+            return res.status(404).json({
+                message: 'Shipment not found'
+            });
         }
 
         const { status } = req.body;
+
+        const statusFlow = [
+            'Booked',
+            'Picked Up',
+            'In Transit',
+            'Customs Hold',
+            'Out for Delivery',
+            'Delivered'
+        ];
+
+        const currentIndex = statusFlow.indexOf(shipmentData.currentStatus);
+        const newIndex = statusFlow.indexOf(status);
+
+        if (newIndex === -1) {
+            return res.status(400).json({
+                message: 'Invalid shipment status'
+            });
+        }
+
+        if (newIndex <= currentIndex) {
+            return res.status(400).json({
+                message: `Shipment cannot move from ${shipmentData.currentStatus} to ${status}`
+            });
+        }
 
         shipmentData.currentStatus = status;
 
         await shipmentData.save();
 
-        await shipmentHistory.create({ shipmentId: shipmentData._id, status: status });
+        await shipmentHistory.create({
+            shipmentId: shipmentData._id,
+            status: status
+        });
 
         res.status(200).json(shipmentData);
     }
     catch (err) {
-        res.status(500).json({ message: 'Failed to update shipment status', error: err.message });
+        res.status(500).json({
+            message: 'Failed to update shipment status',
+            error: err.message
+        });
     }
 };
 
