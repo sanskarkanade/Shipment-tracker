@@ -145,7 +145,7 @@ status — filter by current status
 
 Example:
 
-GET /api/ship?search=001
+GET /api/ship?search=001 <br>
 GET /api/ship?status=In%20Transit
 ---
 Running Locally
@@ -222,6 +222,8 @@ VITE_API_URL=http://localhost:5000
 For the deployed frontend, VITE_API_URL points to the deployed backend URL.
 ---
 Assumptions
+
+
 Each shipment has a unique reference number.
 A shipment starts with the Booked status.
 Shipment status changes are recorded as separate history records.
